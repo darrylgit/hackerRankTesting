@@ -32,8 +32,8 @@
 // We have one candle of height , one candle of height , and two candles of height . Your niece only blows out the tallest candles, meaning the candles where . Because there are  such candles, we print  on a new line.
 
 function birthdayCakeCandles(ar) {
-  //sort array in descending order, get highest (first) number
-  const tallest = ar.sort((a, b) => b - a)[0];
+  //get highest number from array
+  const tallest = Math.max(...ar);
 
   // Compare each value in array to tallest: if equal, add 1 to accumulator
   return ar.reduce((acc, val) => (val === tallest ? acc + 1 : acc), 0);
