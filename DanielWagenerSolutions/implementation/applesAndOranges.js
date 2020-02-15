@@ -64,14 +64,13 @@ function countApplesAndOranges(s, t, a, b, apples, oranges) {
   const onHouse = location => location >= s && location <= t;
 
   // Accumulates number of fruits that land on house
-  const fruitsOnHouse = (treeLocation, fruitsArray) => {
-    return fruitsArray.reduce((acc, fruitLocation) => {
+  const fruitsOnHouse = (treeLocation, fruitsArray) =>
+    fruitsArray.reduce((acc, fruitLocation) => {
       if (onHouse(fruitLocation + treeLocation)) {
         return acc + 1;
       }
       return acc;
     }, 0);
-  };
 
   console.log(fruitsOnHouse(a, apples));
   console.log(fruitsOnHouse(b, oranges));
