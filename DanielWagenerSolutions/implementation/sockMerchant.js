@@ -40,7 +40,7 @@ function sockMerchant(n, ar) {
   {
     '10': [10, 10, 10],
     '2': [2, 2, 2, 2, 2]
-  }    
+  }
   */
   const groupsObject = ar.reduce((groups, val) => {
     if (!groups[val]) {
