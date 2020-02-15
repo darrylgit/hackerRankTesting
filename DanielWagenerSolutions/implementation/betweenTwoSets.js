@@ -77,5 +77,3 @@ function getTotalX(a, b) {
     return meetsConditions ? acc + 1 : acc;
   }, 0);
 }
-
-console.log(getTotalX([2, 4], [16, 32, 96]));
