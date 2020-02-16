@@ -47,14 +47,14 @@ function divisibleSumPairs(n, k, ar) {
     }, 0);
 
   // Recursive function
-  const getAllPairs = (array, pairsCount) => {
+  const getAllPairs = (inputArray, pairsCount) => {
     // Update pairs count
-    pairsCount += findPairsFromFirstElement(array);
+    pairsCount += findPairsFromFirstElement(inputArray);
 
-    // Now, remove the first element from the array and pass the array through again
-    if (array.length > 1) {
-      array.shift();
-      return getAllPairs(array, pairsCount);
+    // Now, remove the first element from the inputArray and pass the inputArray through again
+    if (inputArray.length > 1) {
+      inputArray.shift();
+      return getAllPairs(inputArray, pairsCount);
     }
 
     // If the array is one element long, we've reached the end.
