@@ -37,7 +37,7 @@ function divisibleSumPairs(n, k, ar) {
   // Helper function that checks first element in array against all other elements to find divisible sum pairs. I.e.: check if array[0] + array[1] is divisible by k, then array[0] + array[2], etc.
   const findPairsFromFirstElement = inputArray =>
     inputArray.reduce((acc, val, index, sourceArray) => {
-      // If the current index is invalid, return early
+      // If the current index plus one is an invalid index, return early
       if (index + 1 >= sourceArray.length) {
         return acc;
       }
