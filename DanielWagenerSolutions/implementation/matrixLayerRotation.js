@@ -154,7 +154,7 @@ function matrixRotation(matrix, r) {
     layerRightColumn,
     layerVals
   ) => {
-    // Objective: Use Array.splice() to strip elements off the beginning of layerVals (changing the original array) and assign them to their new positions in the matrix. This process will follow the same order createLayerValuesArray
+    // Objective: Use Array.splice() to strip elements off the beginning of layerVals (changing the original array) and assign them to their new positions in the matrix. This process will follow the same order as createLayerValuesArray
 
     const layerTopRow = layerNumber;
     const layerLeftColumn = layerNumber;
