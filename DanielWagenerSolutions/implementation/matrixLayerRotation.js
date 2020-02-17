@@ -2,105 +2,88 @@ function matrixRotation(matrix, r) {
   const matrixWidth = matrix[0].length;
   const matrixHeight = matrix.length;
 
-  const oneRotation = matrix => {
-    // STEP 1: Create an array called outerLayer that contains all the values of the outer layer, in order, starting at the top left corner and going clockwise.
+  const rotateOneLayer = (matrix, layerNumber) => {
+    // Set some base constants. The first two are technically the same value, but I gave them different names for legibility later.
+    const layerTopRow = layerNumber;
+    const layerLeftColumn = layerNumber;
+    const layerBottomRow = matrixHeight - layerNumber - 1;
+    const layerRightColumn = matrixWidth - layerNumber - 1;
 
-    // Step 1a: Spread the entire top row of the matrix into outerLayer.
-    let outerLayer = [...matrix[0]];
+    // STEP 1: Create an array called layerVals that contains all the values of the current layer, in order, starting at the top left corner and going clockwise.
 
-    // Step 1b: Now we work down the right column of the matrix. Excluding the first value (which was already in the top row) and the last value (which we'll get to in the next step), push these values into outerLayer.
-    for (let i = 1; i < matrixHeight - 1; i++) {
-      outerLayer.push(matrix[i][matrixWidth - 1]);
-    }
-
-    // Step 1c: Spread the entire bottom row in reverse order into outerLayer.
-    outerLayer = [...outerLayer, ...matrix[matrixHeight - 1].reverse()];
-
-    // Step 1d: Now we work UP the left column of the matrix, excluding the first and last values (like we did in 1b).
-    for (let i = matrixHeight - 2; i > 0; i--) {
-      outerLayer.push(matrix[i][0]);
-    }
-
-    // STEP 2: Time to reorder! Shift the first element off of outerLayer and push it to the end.
-    outerLayer.push(outerLayer.shift());
-
-    // STEP 3: Now we'll user Array.splice() to strip elements off the beginning of outerLayer (changing the original outerLayer array) and assign them to locations in the matrix in the same order we created outerLayer. Since we've changed the order of outerLayer, this will simulate a rotation.
-
-    // Step 3a: Replace the top row of the matrix
-    matrix[0] = outerLayer.splice(0, matrixWidth);
-
-    // Step 3b: Replace the right column of the matrix
-    for (let i = 1; i < matrixHeight - 1; i++) {
-      matrix[i][matrixWidth - 1] = outerLayer.splice(0, 1)[0];
-    }
-
-    // Step 3c: Replace the bottom row of the matrix
-    matrix[matrixHeight - 1] = outerLayer.splice(0, matrixWidth).reverse();
-
-    // Step 3d: Replace the left column of the matrix
-    for (let i = matrixHeight - 2; i > 0; i--) {
-      matrix[i][0] = outerLayer.splice(0, 1)[0];
-    }
-
-    // STEP 4: Create an innerLayer array in the same fashion we created outLayer
-
-    // Step 4a: Spread the top row into innerLayer
-    let innerLayer = [...matrix[1].slice(1, matrixWidth - 1)];
-
-    // Step 4b: Work down the right column of the inner layer. There might not even be a right column, but that's okay.
-    for (let i = 2; i < matrixHeight - 2; i++) {
-      innerLayer.push(matrix[i][matrixWidth - 2]);
-    }
-
-    // Step 4c: Spread the bottom row in reverse into innerLayer
-    innerLayer = [
-      ...innerLayer,
-      ...matrix[matrixHeight - 2].slice(1, matrixWidth - 1).reverse()
+    // Step 1a: Spread the entire top row of the layer into layerVals.
+    let layerVals = [
+      ...matrix[layerTopRow].slice(layerLeftColumn, layerRightColumn + 1)
     ];
 
-    // Step 4d: Work UP the left column.
-    for (let i = matrixHeight - 3; i > 1; i--) {
-      innerLayer.push(matrix[i][1]);
+    // Step 1b: Now we work down the right column of the matrix. Excluding the first value (which was already in the top row) and the last value (which we'll get to in the next step), push this column's values into layerValues.
+    for (let i = layerTopRow + 1; i < layerBottomRow; i++) {
+      layerVals.push(matrix[i][layerRightColumn]);
     }
 
-    // STEP 5: Reorder innerLayer, just like we did with outerLayer in Step 2
-    innerLayer.push(innerLayer.shift());
-
-    // STEP 6: Pretty much Step 3 but for the inner layer this time, I can't be bothered to write it out.
-
-    // Step 6a: Replace the top row of the inner layer
-    matrix[1] = [
-      matrix[1][0],
-      ...innerLayer.splice(0, matrixWidth - 2),
-      matrix[1][matrixWidth - 1]
+    // Step 1c: Spread the layer's entire bottom row, in reverse order, into layerVals.
+    layerVals = [
+      ...layerVals,
+      ...matrix[layerBottomRow]
+        .slice(layerLeftColumn, layerRightColumn + 1)
+        .reverse()
     ];
 
-    // Step 6b: Replace the right column of the inner layer
-    for (let i = 2; i < matrixHeight - 2; i++) {
-      matrix[i][matrixWidth - 2] = innerLayer.splice(0, 1)[0];
+    // Step 1d: Now we work UP the left column of the layer, excluding its first and last values (like we did in 1b).
+    for (let i = layerBottomRow - 1; i > layerTopRow; i--) {
+      layerVals.push(matrix[i][layerLeftColumn]);
     }
 
-    // Step 6c: Replace the bottom row of the inner layer
-    matrix[matrixHeight - 2] = [
-      matrix[matrixHeight - 2][0],
-      ...innerLayer.splice(0, matrixWidth - 2).reverse(),
-      matrix[matrixHeight - 2][matrixWidth - 1]
+    // STEP 2: Time to reorder! Shifting the first element off of layerValues and pushing it to the end simulates one rotation. For multiple rotations, we repeat the process.
+
+    // If a layer completes a full revolution after twelve single-step rotations, then rotating it 13 times gives us the same result as rotating it once. We'll use a modulo to optimize:
+    let rotationsToPerform = r % layerVals.length;
+
+    // Simulate rotations:
+    while (rotationsToPerform) {
+      layerVals.push(layerVals.shift());
+      rotationsToPerform--;
+    }
+
+    // STEP 3: Now we'll user Array.splice() to strip elements off the beginning of layerVals (changing the original array) and assign them to their new positions in the matrix. This process will follow the same order as Step 1.
+
+    // Step 3a: Spread the layer's new top row into the corresponding row of the matrix
+    matrix[layerTopRow] = [
+      ...matrix[layerTopRow].slice(0, layerLeftColumn),
+      ...layerVals.splice(0, matrixWidth - layerNumber * 2),
+      ...matrix[layerTopRow].slice(layerRightColumn + 1)
     ];
 
-    // Step 6d: Replace the left column of the inner layer
-    for (let i = matrixHeight - 3; i > 1; i--) {
-      matrix[i][1] = innerLayer.splice(0, 1)[0];
+    // Step 3b: Replace the right column of the layer
+    for (let i = layerTopRow + 1; i < layerBottomRow; i++) {
+      matrix[i][layerRightColumn] = layerVals.splice(0, 1)[0];
+    }
+
+    // Step 3c: Spread the layer's new bottom row into the corresponding row of the matrix
+    matrix[layerBottomRow] = [
+      ...matrix[layerBottomRow].slice(0, layerLeftColumn),
+      ...layerVals.splice(0, matrixWidth - layerNumber * 2).reverse(),
+      ...matrix[layerBottomRow].slice(layerRightColumn + 1)
+    ];
+
+    // Step 3d: Replace the left column of the layer
+    for (let i = layerBottomRow - 1; i > layerTopRow; i--) {
+      matrix[i][layerLeftColumn] = layerVals.splice(0, 1)[0];
     }
 
     return matrix;
   };
 
-  r = r % (matrixHeight * 2 + matrixWidth * 2 - 4);
-  while (r) {
-    matrix = oneRotation(matrix);
-    r--;
+  // Call rotateOneLayer for each layer in the matrix
+  const matrixLayers = Math.min(matrixWidth, matrixHeight) / 2;
+  let currentLayer = 0;
+
+  while (currentLayer < matrixLayers) {
+    matrix = rotateOneLayer(matrix, currentLayer);
+    currentLayer++;
   }
 
+  // Console log the rotated matrix
   matrix.forEach(row => {
     console.log(row.join(" "));
   });
@@ -121,4 +104,4 @@ const sampleMatrix2 = [
   [17, 18, 19, 20]
 ];
 
-matrixRotation(sampleMatrix, 2);
+matrixRotation(sampleMatrix2, 20);
