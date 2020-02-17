@@ -78,7 +78,7 @@ function migratoryBirds(arr) {
         return { ...acc, countOfThisBird: 1 };
       }
 
-      // If this bird is the same as the last bird
+      // If this bird is the same as the current most common bird
       const currentCount = countOfThisBird + 1;
 
       if (bird === mostCommonBird) {
@@ -89,7 +89,7 @@ function migratoryBirds(arr) {
         };
       }
 
-      // If this bird is different from the last bird
+      // If this bird is different from current most common bird
       return currentCount >= countOfMostCommonBird
         ? {
             mostCommonBird: bird,
