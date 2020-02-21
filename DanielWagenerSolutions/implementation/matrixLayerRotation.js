@@ -139,7 +139,7 @@ function matrixRotation(matrix, r) {
         .reverse()
     ];
 
-    // Step 4: Now we work UP the left column of the layer, excluding its first and last values (like we did in 1b).
+    // Step 4: Now we work UP the left column of the layer, excluding its first and last values.
     for (let i = layerBottomRow - 1; i > layerTopRow; i--) {
       layerValuesArray.push(matrix[i][layerLeftColumn]);
     }
