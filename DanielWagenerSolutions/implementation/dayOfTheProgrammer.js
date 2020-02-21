@@ -57,5 +57,3 @@ function dayOfProgrammer(year) {
   return `${day}.0${month}.${year}`;
   // As it turns out, the month is always going to be September. For better or worse, I let my algorithm figure that out for me.
 }
-
-console.log(dayOfProgrammer(1918));
