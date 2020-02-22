@@ -60,5 +60,3 @@ function countingValleys(n, s) {
 
   return valleyCount;
 }
-
-console.log(countingValleys(0, "UDDDUDUU"));
