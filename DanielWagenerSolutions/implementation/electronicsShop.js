@@ -77,5 +77,3 @@ function getMoneySpent(keyboards, drives, b) {
       return acc;
     }, -1);
 }
-
-console.log(getMoneySpent([9, 4, 2], [6, 34, 3], -1234234));
