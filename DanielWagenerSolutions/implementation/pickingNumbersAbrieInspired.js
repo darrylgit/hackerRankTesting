@@ -50,4 +50,17 @@ function pickingNumbers(a) {
       );
     })
     .reduce((acc, val) => (val.length > acc ? val.length : acc), 0);
+
+  // Slightly more ridiculous solution:
+  return Math.max(
+    ...a.map((_, i) => {
+      let copy = [...a];
+      return [...copy.splice(i, 1), ...copy].filter(
+        (el, _, target) => target[0] >= el && target[0] - el <= 1
+      ).length;
+    })
+  );
 }
+
+const arr = [1, 1, 2, 2, 2, 4, 5, 6];
+console.log(pickingNumbers(arr));
